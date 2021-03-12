@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31019.35
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpLineReader", "CSharpLineReader\CSharpLineReader.csproj", "{A63B2AF3-F396-44A3-B351-502B067CC980}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpLineReaderTests", "CSharpLineReaderTests\CSharpLineReaderTests.csproj", "{FD94B0EF-DD51-4066-BFF2-775307784D1C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A63B2AF3-F396-44A3-B351-502B067CC980}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A63B2AF3-F396-44A3-B351-502B067CC980}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A63B2AF3-F396-44A3-B351-502B067CC980}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A63B2AF3-F396-44A3-B351-502B067CC980}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD94B0EF-DD51-4066-BFF2-775307784D1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD94B0EF-DD51-4066-BFF2-775307784D1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD94B0EF-DD51-4066-BFF2-775307784D1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD94B0EF-DD51-4066-BFF2-775307784D1C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C2B82CAF-FBEA-4EA8-B74D-9BBCFCDBE003}
+	EndGlobalSection
+EndGlobal
