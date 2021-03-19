@@ -198,11 +198,16 @@ namespace CSharpLineReaderTests
                 actual.Should().Be(expected);
             }
             
-            /*[TestCase(" /*Comment#1#", 0)]
-            [TestCase("\t/#1#/Comment\n#1#", 0)]
-            [TestCase("/*foreach(var i in things)\n{\n return\n}#1#", 0)]
-            [TestCase("var a = 0;/*foreach(var i in things)\n{\n return\n}#1#", 1)]
-            [TestCase("/*foreach(var i in things)\n{\n return\n}#1#var a = 0;", 1)]
+            [TestCase(" /*Comment*/", 0)]
+            [TestCase("\t/*//Comment\n*/", 0)]
+            [TestCase("/*foreach(var i in things)\n{\n return\n}*/", 0)]
+            [TestCase("var a = 0;/*foreach(var i in things)\n{\n return\n}*/", 1)]
+            [TestCase("/*foreach(var i in things)\n{\n return\n}*/var a = 0;", 1)]
+            [TestCase("///*asdfasdfasdfasdfasdf\nasdfasdf*/", 1)]
+            [TestCase("asdfasdf///*asdfasdfasdfasdfasdf\nasdfasdf*/", 2)]
+            [TestCase("asdfasdf///*\n*/", 2)]
+            [TestCase("/**/asdfasdf", 1)]
+            [TestCase("/**/asdfasdf", 1)]
             public void ShouldIgnoreAllLinesOfMultilineComments(string input, int expected)
             {
                 // Arrange
@@ -213,7 +218,7 @@ namespace CSharpLineReaderTests
 
                 //Assert
                 actual.Should().Be(expected);
-            }*/
+            }
         }
 
         private static LineCounter CreateSut()
