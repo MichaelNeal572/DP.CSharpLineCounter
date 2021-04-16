@@ -1,175 +1,107 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace CSharpLineReader
 {
-    public class LineCounter
+  public class ProjectLineCounter
+  {
+    private readonly IGetSourceFilePathsInDirectory _getSourceFilePathsInDirectory;
+    private readonly IGetSourceFileContentsFromFilePath _getSourceFileContentsFromFilePath;
+
+    public ProjectLineCounter(IGetSourceFilePathsInDirectory getSourceFilePathsInDirectory,
+      IGetSourceFileContentsFromFilePath getSourceFileContentsFromFilePath)
     {
-        public int CountLines(string input)
-        {
-            var encounteredUnknown = false;
-            var lineCount = 0;
-            var inputWalker = new InputWalker(input);
-            foreach (var manifestation in inputWalker.Walk())
-            {
-                if (manifestation == InputManifestation.Unknown)
-                {
-                    encounteredUnknown = true;
-                }
-
-                if (manifestation == InputManifestation.LineBreak && encounteredUnknown)
-                {
-                    lineCount++;
-                    encounteredUnknown = false;
-                }
-            }
-            return lineCount;
-        }
-
-        public enum InputManifestation
-        {
-            EndOfFile,
-            MultiLineStart,
-            MultiLineEnd,
-            SingleLine,
-            LineBreak,
-            Unknown
-        }
-
-        private class InputWalker
-        {
-            private string _text;
-            private int _index;
-            private ParserContext _context = new ParserContext();
-
-            public InputWalker(string text)
-            {
-                _text = text ?? "";
-                _text += "\n\n";
-                _index = -1;
-            }
-
-            public override string ToString()
-            {
-                return $"{_index} - {_text} - {(_index<0?"NA":_text[_index].ToString())}";
-            }
-
-            private bool IsSingleLineComment()
-            {
-                var value = Value;
-                return  value.Current== '/' && value.Next == '/';
-            }
-
-            private bool IsStartOfMultiLineComment()
-            {
-                var value = Value;
-                return  value.Current== '/' && value.Next == '*';
-            }
-            private bool IsEndOfMultiLineComment()
-            {
-                var value = Value;
-                return  value.Current== '*' && value.Next == '/';
-            }
-
-            private bool IsSourceCharacter()
-            {
-                var current = Value.Current;
-                return !Char.IsWhiteSpace(current);
-            }
-
-            private bool IsNewLine()
-            {
-                var current = Value.Current;
-                return current == '\n';
-            }
-
-            public IEnumerable<InputManifestation> Walk()
-            {
-                foreach (var steps in WalkInPotentialLargeSteps())
-                {
-                    foreach (var step in steps)
-                    {
-                        yield return step;
-                    }
-                }
-            }
-            private IEnumerable<InputManifestation[]> WalkInPotentialLargeSteps()
-            {
-                while (AdvanceInputCharacter())
-                {
-                    if (!_context.IsWithinComment)
-                    {
-                        if (IsSingleLineComment())
-                        {
-                            _context.IsWithinSingleLineComment = true;
-                            AdvanceInputCharacter();
-                            yield return GetAccumulatedManifestations(InputManifestation.SingleLine);
-                            continue;
-                        }
-
-                        if (IsStartOfMultiLineComment())
-                        {
-                            _context.IsWithinMultiLineComment = true;
-                            AdvanceInputCharacter();
-                            yield return GetAccumulatedManifestations(InputManifestation.MultiLineStart);
-                            continue;
-                        }
-                    }
-                    else if (_context.IsWithinMultiLineComment && IsEndOfMultiLineComment())
-                    {
-                        _context.IsWithinMultiLineComment = false;
-                        AdvanceInputCharacter();
-                        yield return GetAccumulatedManifestations(InputManifestation.MultiLineEnd);
-                        continue;
-                    }
-
-                    if (IsSourceCharacter() && !_context.IsWithinComment)
-                    {
-                        _context.HasNonWhiteSpaceCharacter = true;
-                    }
-
-                    if (IsNewLine())
-                    {
-                        _context.IsWithinSingleLineComment = false;
-
-                        yield return GetAccumulatedManifestations(InputManifestation.LineBreak);
-
-                        _context.HasNonWhiteSpaceCharacter = false;
-                    }
-                }
-                yield return GetAccumulatedManifestations(InputManifestation.EndOfFile);
-                
-                InputManifestation[] GetAccumulatedManifestations(InputManifestation manifestationImOn){
-                    if (_context.HasNonWhiteSpaceCharacter)
-                    {
-                        _context.HasNonWhiteSpaceCharacter = false;
-                        return new [] {InputManifestation.Unknown, manifestationImOn};
-                    }
-                    return new [] { manifestationImOn };
-                }
-            }
-
-            private bool AdvanceInputCharacter()
-            {
-                if (_index < _text.Length - 2)
-                {
-                    _index++;
-                    return true;
-                }
-
-                return false;
-            }
-
-            private (char Current, char Next) Value => (_text[_index], _text[_index + 1]);
-
-            private class ParserContext
-            {
-                public bool HasNonWhiteSpaceCharacter { get; set; }
-                public bool IsWithinSingleLineComment { get; set; }
-                public bool IsWithinMultiLineComment { get; set; }
-                public bool IsWithinComment => IsWithinMultiLineComment || IsWithinSingleLineComment;
-            }
-        }
+      _getSourceFilePathsInDirectory = getSourceFilePathsInDirectory;
+      _getSourceFileContentsFromFilePath = getSourceFileContentsFromFilePath;
     }
+
+    public int CountLines(string directoryPath)
+    {
+      var allFiles = _getSourceFilePathsInDirectory.GetFiles(directoryPath);
+      var totalLines = 0;
+      var totalLetters = 0;
+
+      foreach (var filePath in allFiles)
+      {
+        using var fileStream = _getSourceFileContentsFromFilePath.GetContents(filePath);
+        using var streamReader = new StreamReader(fileStream);
+        var source = streamReader.ReadToEnd();
+        var lineCounter = new LineCounter();
+        totalLines += lineCounter.CountLines(source);
+        var letterCounter = new LetterCounter();
+        totalLetters += letterCounter.CountLetters(source);
+      }
+
+      return totalLines;
+    }
+  }
+
+  public class GetSourceFilePathsInDirectory : IGetSourceFilePathsInDirectory
+  {
+    public IEnumerable<string> GetFiles(string directoryPath)
+    {
+      return Directory.GetFiles(directoryPath, "*.cs", SearchOption.AllDirectories);
+    }
+  }
+
+  public interface IGetSourceFilePathsInDirectory
+  {
+    IEnumerable<string> GetFiles(string directoryPath);
+  }
+
+  public class GetSourceFileContentsFromFilePath : IGetSourceFileContentsFromFilePath
+  {
+    public Stream GetContents(string filePath)
+    {
+      return File.Open(filePath, FileMode.Open, FileAccess.Read);
+    }
+  }
+
+  public interface IGetSourceFileContentsFromFilePath
+  {
+    Stream GetContents(string filePath);
+  }
+
+  public class LineCounter
+  {
+    public int CountLines(string input)
+    {
+      var encounteredUnknown = false;
+      var lineCount = 0;
+      var inputWalker = new InputWalker(input);
+
+      foreach (var manifestation in inputWalker.Walk())
+      {
+        if (manifestation == TokenType.Unknown)
+        {
+          encounteredUnknown = true;
+        }
+
+        if (manifestation == InputManifestation.LineBreak && encounteredUnknown)
+        {
+          lineCount++;
+          encounteredUnknown = false;
+        }
+      }
+
+      return lineCount;
+    }
+  }
+
+  public class LetterCounter
+  {
+    public int CountLetters(string input)
+    {
+      var letterCount = 0;
+      var inputWalker = new InputWalker(input);
+
+      foreach (var manifestation in inputWalker.Walk())
+        if (manifestation == TokenType.Unknown)
+          letterCount += manifestation.Length;
+
+      return letterCount;
+    }
+  }
 }

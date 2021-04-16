@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.ComTypes;
 using CSharpLineReader;
 using FluentAssertions;
 using NUnit.Framework;
@@ -197,7 +198,7 @@ namespace CSharpLineReaderTests
                 //Assert
                 actual.Should().Be(expected);
             }
-            
+
             [TestCase(" /*Comment*/", 0)]
             [TestCase("\t/*//Comment\n*/", 0)]
             [TestCase("/*foreach(var i in things)\n{\n return\n}*/", 0)]
@@ -209,6 +210,31 @@ namespace CSharpLineReaderTests
             [TestCase("/**/asdfasdf", 1)]
             [TestCase("/**/asdfasdf", 1)]
             public void ShouldIgnoreAllLinesOfMultilineComments(string input, int expected)
+            {
+              // Arrange
+              var sut = CreateSut();
+
+              // Act
+              var actual = sut.CountLines(input);
+
+              //Assert
+              actual.Should().Be(expected);
+            }
+
+
+            [TestCase("Bob(\"/*Comment*/\")", 1)]
+            [TestCase("Bob(@\"/*Comment*/\")", 1)]
+            [TestCase(@"Bob(@""/*Comment*/"")", 1)]
+            [TestCase(@"Bob(@""/*Com
+1
+ment*/"")", 2)]
+            [TestCase(@"Bob(@""aasddsadasd
+//Comment*/"")", 2)]
+            [TestCase(@"Bob(@""aasddsadasd
+1
+2
+//Comment*/"")", 2)]
+            public void ShouldNotTreatCommentSyntaxWithinStringLiteralsAsComments(string input, int expected)
             {
                 // Arrange
                 var sut = CreateSut();
