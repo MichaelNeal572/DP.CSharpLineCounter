@@ -7,10 +7,48 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Resources\Does Recurse Deeply\First Folder\Second Folder\LessDeeplyNestedSourceFile.cs" />
+    <Compile Remove="Resources\Does Recurse Deeply\First Folder\Second Folder\Third Folder\DeeplyNestedSourceFile.cs" />
+    <Compile Remove="Resources\Files In Root\MoreSexySource.cs" />
+    <Compile Remove="Resources\No Files In Root\Nested Folder\HeNeverImagined.cs" />
+    <Compile Remove="Resources\SexySource.cs" />
+    <Compile Remove="Resources\Should Allow Mixed Case Extensions\FileWithFunnyCasing.cS" />
+    <Compile Remove="Resources\Should Allow Mixed Case Extensions\FileWithVerySeriousCasing.CS" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\No Files\Make Folder.txt" />
     <None Remove="Resources\SourceFile.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Resources\Does Recurse Deeply\First Folder\Second Folder\LessDeeplyNestedSourceFile.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Does Recurse Deeply\First Folder\Second Folder\Third Folder\DeeplyNestedSourceFile.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Files In Root\MoreSexySource.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\No Files In Root\Nested Folder\HeNeverImagined.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\No Files\Make Folder.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Should Allow Mixed Case Extensions\FileWithFunnyCasing.cS">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Should Allow Mixed Case Extensions\FileWithVerySeriousCasing.CS">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\SexySource.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\SourceFile.txt" />
   </ItemGroup>
 
