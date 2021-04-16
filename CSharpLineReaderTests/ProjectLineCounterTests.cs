@@ -9,16 +9,18 @@ namespace CSharpLineReaderTests
   [TestFixture]
   public class ProjectLineCounterTests
   {
-    [Test]
-    public void ShouldLoadFilesFromDirectory()
-    {
-      // Arrange
-      var sut = CreateSut();
-      // Act
-      var totalLines = sut.CountLines("C:\\Systems\\HOMiiIT");
-      // Assert
-      Assert.AreEqual(totalLines, 432423423);
-    }
+
+
+    //[Test]
+    //public void ShouldLoadFilesFromDirectory()
+    //{
+    //  // Arrange
+    //  var sut = CreateSut();
+    //  // Act
+    //  var totalLines = sut.CountLines("C:\\Systems\\HOMiiIT");
+    //  // Assert
+    //  Assert.AreEqual(totalLines, 432423423);
+    //}
 
     private static ProjectLineCounter CreateSut()
     {
