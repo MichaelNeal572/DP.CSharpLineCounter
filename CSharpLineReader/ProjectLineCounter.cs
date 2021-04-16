@@ -18,7 +18,6 @@ namespace CSharpLineReader
     {
       var allFiles = _getSourceFilePathsInDirectory.GetFiles(directoryPath);
       var totalLines = 0;
-      var totalLetters = 0;
 
       foreach (var filePath in allFiles)
       {
@@ -27,8 +26,6 @@ namespace CSharpLineReader
         var source = streamReader.ReadToEnd();
         var lineCounter = new LineCounter();
         totalLines += lineCounter.CountLines(source);
-        var letterCounter = new LetterCounter();
-        totalLetters += letterCounter.CountLetters(source);
       }
 
       return totalLines;

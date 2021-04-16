@@ -21,7 +21,7 @@ namespace CSharpLineReaderTests
     //  // Assert
     //  Assert.AreEqual(totalLines, 432423423);
     //}
-
+    
     private static ProjectLineCounter CreateSut()
     {
       return new ProjectLineCounter(new GetSourceFilePathsInDirectory(), new GetSourceFileContentsFromFilePath());

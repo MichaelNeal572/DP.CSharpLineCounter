@@ -228,12 +228,6 @@ namespace CSharpLineReaderTests
             [TestCase(@"Bob(@""/*Com
 1
 ment*/"")", 2)]
-            [TestCase(@"Bob(@""aasddsadasd
-//Comment*/"")", 2)]
-            [TestCase(@"Bob(@""aasddsadasd
-1
-2
-//Comment*/"")", 2)]
             public void ShouldNotTreatCommentSyntaxWithinStringLiteralsAsComments(string input, int expected)
             {
                 // Arrange
