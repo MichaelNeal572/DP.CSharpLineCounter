@@ -2,7 +2,7 @@
 
 namespace CSharpLineReader
 {
-  public class ProjectLineCounter
+  public class ProjectLineCounter : IProjectLineCounter
   {
     private readonly IGetSourceFilePathsInDirectory _getSourceFilePathsInDirectory;
     private readonly IGetSourceFileContentsFromFilePath _getSourceFileContentsFromFilePath;
@@ -30,5 +30,10 @@ namespace CSharpLineReader
 
       return totalLines;
     }
+  }
+
+  public interface IProjectLineCounter
+  {
+    int CountLines(string directoryPath);
   }
 }
